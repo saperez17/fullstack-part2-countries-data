@@ -1,2 +1,2 @@
-# fullstack-part2-countries-data
+# fullstack-part1-anecdotes
 Created with CodeSandbox
