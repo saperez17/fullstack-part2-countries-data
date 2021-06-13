@@ -1,6 +1,11 @@
+require('dotenv').config()
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./styles.css";
+
+
+const API_ACCESS_KEY = process.env.REACT_APP_API_ACCESS_KEY;
 
 const SearchInput = ({ value, inputOnChange }) => {
   return (
@@ -10,16 +15,16 @@ const SearchInput = ({ value, inputOnChange }) => {
   );
 };
 
-const Country = ({ country }) => {
-  const API_ACCESS_KEY = "e25bef283327a4c36341a37ac1d96109";
-  const [weatherData, setWeatherData] = useState();
+const Country = ({ country={} }) => {
+  console.log(process.env.REACT_APP_API_ACCESS_KEY)
+  const [weatherData, setWeatherData] = useState({});
   useEffect(() => {
     axios
       .get(
-        "http://api.weatherstack.com/current?access_key=e25bef283327a4c36341a37ac1d96109&query=New York"
+        `http://api.weatherstack.com/current?access_key=${API_ACCESS_KEY}&query=${country.name}`
       )
       .then((response) => {
-        console.log(response.data);
+        setWeatherData({...response.data.current})
       });
   }, []);
   return (
@@ -39,7 +44,9 @@ const Country = ({ country }) => {
 
       <div>
         <h3>Weather in {country.name}</h3>
-        <p>temperature </p>
+        <p>temperature {weatherData.temperature} </p>
+        <img src={weatherData.weather_icons}/>
+        <p>wind {weatherData.wind_speed} mph direction {weatherData.wind_dir}</p>
       </div>
     </div>
   );
@@ -65,7 +72,8 @@ const CountriesList = ({ countries }) => {
             </div>
           ))
         ) : countries.length === 1 ? (
-          <Country country={countries[0]} />
+          // <Country country={countries[0]} /> 
+          null
         ) : (
           "Too many matches. Try another search query."
         )
